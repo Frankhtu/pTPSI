@@ -46,9 +46,6 @@ string GF2X_to_String(GF2X x) {
 	{
 		ret += arr[i];
 	}
-	//cout << "转换后的bit串为:" << ret << endl;
-	//bitset<64> t(ret);
-	//cout << "转换为整型为:" << t.to_ulong() << endl;
 	return ret;
 }
 
@@ -74,12 +71,7 @@ unsigned long GF2X_to_Decimal(GF2X x, int m) {
 	{
 		ret += '0';
 	}
-	//cout << "原来的x为:" << x << endl;
-	//cout << "转换后的bit串为:" << ret << endl;
-	//dynamic_bitset<> db(m, ret);
-	//cout << "转换后的bit串为:" << ret << endl;
 	bitset<64> t(ret);
-	//cout << "转换为整型为:" << t.to_ulong() << endl;
 	return t.to_ulong();
 }
 
@@ -121,10 +113,7 @@ Vec<GF2X> complement(GF2X x, int m, int k) {
 }
 
 GF2X GS_Hash(GF2X a, GF2X b, GF2X x, int m, int k, GF2X f) {
-	//GF2X f = GF2X();
-	//f.SetLength(k);
-	//f.normalize();
-	//GF2X hash_result = (MulTrunc(a, x, m) + b);
+
 
 	GF2X result = MulMod(a, x, f) + b;
 	GF2X hash_result;
@@ -144,21 +133,19 @@ GF2X GS_Hash(GF2X a, GF2X b, GF2X x, int m, int k, GF2X f) {
 int GS_Protocol_sort_search(int i, vector<long>& correctSet, vector<long> Set, int N, int m, int k, GF2X a, GF2X b, GF2X y, GF2X f) {
 	//std::cout << "-------Round<" << i << ">--------" << endl;
 	int res = 0;
-	//对y进行补位
+
 	Vec<GF2X> complement_arr = complement(y, m, k);
-	// 二分查找判断
+
 	for (int i = 0; i < complement_arr.length(); i++)
 	{
 		//cout << complement_arr[i] << endl;
 		//cout << "a::" << a << endl;
 		GF2X z = MulMod(InvMod(a, f), (complement_arr[i] - b), f);
-		//cout << "当前y=" << y << endl;
-		//cout << "补位y=" << complement_arr[i] << endl;
-		//cout << "当前z=" << z << endl;
+
 		long dec_z = GF2X_to_Decimal(z, m);
-		//cout << "转化z=" << dec_z << endl;
+
 		bool search_res = binary_search(Set.begin(), Set.end(), dec_z);
-		//cout << "是否找到=" << search_res << endl;
+
 		if (search_res)
 		{
 			//cout << dec_z << endl;
@@ -182,26 +169,7 @@ int GS_Protocol(int i, Vec<GF2X>& correctSet, Vec<GF2X> Set, int N, int m, int k
 			//std::cout << i << endl;
 			correctSet.append(x);
 			res = 1;
-			// 测试
-			//cout << "当前的a值为:" << a << endl;
-			//cout << "当前的b值为:" << b << endl;
-			//cout << "当前的y值为:" << y << endl;
 
-			// //对y进行补位
-			//Vec<GF2X> complement_arr = complement(y, m,k);
-			//for (int i = 0; i < complement_arr.length(); i++)
-			//{
-			//	//cout << "补位:" << complement_arr[i] << endl;
-			//	GF2X z = MulMod(InvMod(a, f), (complement_arr[i] - b), f);
-			//	//GF2X h = GS_Hash(a, b, z, m, k, f);
-			//	//cout << "当前的h值为:" << h << endl;
-			//	//cout << "计算出的z:" << z << endl;
-			//	//cout << "当前的的x:" << x << endl;
-			//	if (z == x)
-			//	{
-			//		cout << "********找到********" << endl;
-			//	}
-			//}
 
 		}
 	}
@@ -252,14 +220,13 @@ int judge2(Vec<GF2X> set, GF2X x) {
 		//cout << "res:::" <<res  << endl;
 		if (set[i] == x)
 		{
-			//cout << "x为:" << x << endl;
-			//cout << "相等的set为:" << set[i] << endl;
+
 			return 0;
 		}
 	}
 	return 1;
 }
-//模板函数：将string类型变量转换为常用的数值类型（此方法具有普遍适用性） 
+
 template <class Type>
 Type stringToNum(const string& str) {
 	istringstream iss(str);
@@ -276,22 +243,19 @@ void test(long n1, vector<long> P1_data, vector<long> P2_data, Vec<GF2X> vec_a, 
 	NTL_EXEC_RANGE(n1, first, last)
 		for (int i = first; i < last; i++)
 		{
-			// 从GF(2^n)中随机选择a、b、y
-			/*GF2X a = random_GF2X(m);
-			GF2X b = random_GF2X(m);
-			GF2X y = random_GF2X(k);*/
+
 			GF2X a = vec_a[i];
 			GF2X b = vec_b[i];
 			GF2X y = vec_y[i];
 
 
-			//// 初始
+
 			//Vec<GF2X> P1_correct_set, P2_correct_set;
 			//P1_count += GS_Protocol(i, P1_correct_set, P1_Set, N, m, k, a, b, y, f);
 			//P2_count += GS_Protocol(i, P2_correct_set, P2_Set, N, m, k, a, b, y, f);
 
 
-			// 优化
+
 			vector<long> P1_correct_set, P2_correct_set;
 			P1_count += GS_Protocol_sort_search(i, P1_correct_set, P1_data, N, m, k, a, b, y, f);
 			P2_count += GS_Protocol_sort_search(i, P2_correct_set, P2_data, N, m, k, a, b, y, f);
@@ -330,11 +294,11 @@ class Hash_Table
 
 public:
 	Hash_Table(u64 size,block seed);
-	u64 Hash_fun(Elemtype value);//定义哈希函数
-	void Create_HashTable(vector<long>, u64 size);//创建哈希表
-	bool unique_Lnode(Elemtype value); //判断结点是否重复
-	void Insert_Lnode(Elemtype value);//插入结点进入哈希表
-	void Debug();//测试一下
+	u64 Hash_fun(Elemtype value);
+	void Create_HashTable(vector<long>, u64 size);
+	bool unique_Lnode(Elemtype value); 
+	void Insert_Lnode(Elemtype value);
+	void Debug();
 	~Hash_Table();
 	vector<long> get_data(u64 index);
 	u64 get_size();
@@ -379,7 +343,7 @@ u64 Hash_Table::Hash_fun(Elemtype value)
 	idx %= this->num;
 	return idx;
 }
-Hash_Table::~Hash_Table()//尤其要注意开辟在堆区的数据的删除
+Hash_Table::~Hash_Table()
 {
 	for (u64 j = 0; j < this->num; j++)
 	{
@@ -395,7 +359,7 @@ Hash_Table::~Hash_Table()//尤其要注意开辟在堆区的数据的删除
 		this->table[j].next = nullptr;
 	}
 	delete[] this->table;
-	//cout << "释放空间成功！" << endl;
+
 }
 void Hash_Table::Create_HashTable(vector<long> value, u64 size)
 {
@@ -413,9 +377,9 @@ void Hash_Table::Create_HashTable(vector<long> value, u64 size)
 			Lnode* node = new Lnode;
 			node->data = value[i]; node->key = _key; node->next = nullptr; table[_key].next = node;
 		}
-		else//如果现在结点不为空，先去遍历，看是否该元素已经添加
+		else
 		{
-			bool reslut = this->unique_Lnode(value[i]);//reslut为1：该元素为新元素，为0，就不再添加了
+			bool reslut = this->unique_Lnode(value[i]);
 			if (reslut)
 			{
 				Lnode* node = new Lnode;
@@ -427,7 +391,7 @@ void Hash_Table::Create_HashTable(vector<long> value, u64 size)
 	}
 }
 
-bool Hash_Table::unique_Lnode(Elemtype value)//判断数据是否已经存在
+bool Hash_Table::unique_Lnode(Elemtype value)
 {
 	u64 index = this->Hash_fun(value);
 	Lnode* temp = table[index].next;
@@ -448,13 +412,13 @@ void Hash_Table::Insert_Lnode(Elemtype value)
 		Lnode* node = new Lnode;
 		node->data = value; node->key = reslut; node->next = nullptr; table[reslut].next = node;
 	}
-	else//如果现在结点不为空，先去遍历，看是否该元素已经添加
+	else
 	{
-		bool reslut1 = this->unique_Lnode(value);//reslut为1：该元素为新元素，为0，就不再添加了
+		bool reslut1 = this->unique_Lnode(value);
 		if (reslut1)
 		{
 			Lnode* node = new Lnode;
-			node->data = value; node->key = reslut; node->next = table[reslut].next; table[reslut].next = node;//前插法
+			node->data = value; node->key = reslut; node->next = table[reslut].next; table[reslut].next = node;
 		}
 		else
 			return;
@@ -463,11 +427,11 @@ void Hash_Table::Insert_Lnode(Elemtype value)
 
 void Hash_Table::Debug()
 {
-	cout << "测试如下：" << endl;
+	
 	for (u64 j = 0; j < this->num; j++)
 	{
 		Lnode* temp = this->table[j].next;
-		cout << "索引为" << j << "的数值：";
+
 		if (temp == nullptr)
 		{
 			cout << "NULL" << endl;
@@ -498,7 +462,7 @@ u64 Hash_Table::get_size()
 vector<long> Hash_Table::get_data(u64 index) {
 	vector<long> result;
 	Lnode* temp = this->table[index].next;
-	//cout << "索引为" << j << "的数值：";
+
 	if (temp == nullptr)
 	{
 		//cout << "NULL" << endl;
@@ -518,7 +482,7 @@ vector<long> Hash_Table::get_data(u64 index) {
 void GS_Protocol_hash_search(int i, vector<long>& correctSet, Hash_Table HT, int N, int m, int k, GF2X a, GF2X b, GF2X y, GF2X f, int m2) {
 	//std::cout << "-------Round<" << i << ">--------" << endl;
 	//int res = 0;
-	//对y进行补位
+
 	Vec<GF2X> complement_arr = complement(y, m2, k);
 
 	for (int i = 0; i < complement_arr.length(); i++)
@@ -526,21 +490,17 @@ void GS_Protocol_hash_search(int i, vector<long>& correctSet, Hash_Table HT, int
 		//cout << complement_arr[i] << endl;
 		//cout << "a::" << a << endl;
 		GF2X z = MulMod(InvMod(a, f), (complement_arr[i] - b), f);
-		//cout << "当前y=" << y << endl;
-		//cout << "补位y=" << complement_arr[i] << endl;
-		//cout << "当前z=" << z << endl;
+
 		int mod = pow(2, m2);
 		long dec_z = GF2X_to_Decimal(z, m) % mod;
-		//cout << "转化后的dec_z=" << dec_z << endl;
+		//cout << "转锟斤拷锟斤拷锟絛ec_z=" << dec_z << endl;
 		vector<long> res = HT.get_data(dec_z);
 		for (int i = 0; i < res.size(); i++)
 		{
 			//cout << res[i] << endl;
 			correctSet.push_back(res[i]);
 		}
-		//cout << "转化z=" << dec_z << endl;
-		//bool search_res = binary_search(Set.begin(), Set.end(), dec_z);
-		//cout << "是否找到=" << search_res << endl;
+
 
 		//cout << "--------------------------" << endl;
 	}
@@ -550,12 +510,12 @@ int main() {
 	//PRNG prng(_mm_set_epi32(4253465, 3434565, 234435, 23987045));
 	//block ce = prng.get<block>();
 
-	//cout << "随机种子=" << r << endl;
+
 	
 	//PRNG prng1(aa);
 	//auto myHashSeed = prng1.get<block>();
 	//cout << myHashSeed << endl;
-	auto n = thread::hardware_concurrency();//获取cpu核心个数 
+	auto n = thread::hardware_concurrency();
 	SetNumThreads(16);
 	struct timespec start, finish;
 	double elapsed;
@@ -568,17 +528,17 @@ int main() {
 	int k = log2((int)(threshold * N)) + 1;
 	int m = 64;
 	cout << "N=" << N << endl;
-	cout << "k为:" << k << endl;
-	cout << "m为:" << m << endl;
+	cout << "k=" << k << endl;
+	cout << "m=" << m << endl;
 
 
-	//// 写文件
+	//// 写锟侥硷拷
 	GF2X f = BuildIrred_GF2X(m);
 
 	cout << "deg(f):" << deg(f) << endl;
 
 
-	// 生成参与方P1的集合
+
 	Vec<GF2X> P1_Set;
 	P1_Set.SetLength(N);
 	for (int i = 0; i < N; i++) {
@@ -604,19 +564,19 @@ int main() {
 #pragma omp parallel for
 	for (int i = 0; i < count; i++)
 	{
-		// 根据时间戳生成随机种子
+
 		srand((unsigned)time(NULL));
 		u64 r = rand();
 		block seed = toBlock(r+i);
 
-		// 创建hashTable
+
 		//cout << seed << endl;
 		Hash_Table P1_HT(size,seed);
 		P1_HT.Create_HashTable(P1_data, N);
 		//P1_HT.Debug();
 		flag += P1_HT.get_size();
 		size_arr.push_back(P1_HT.get_size());
-		//cout << "大小:" << P1_HT.get_size() << endl;
+
 
 	}
 
@@ -632,8 +592,8 @@ int main() {
 	}
 
 	int result = flag / count;
-	cout << "集合大小为:::" << N << endl;
-	cout << "哈希表平均大小:::" << result << endl;
+	cout << " N =" << N << endl;
+	cout << "result = " << result << endl;
 
 
 	

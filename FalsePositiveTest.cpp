@@ -39,9 +39,6 @@ string GF2X_to_String(GF2X x) {
 	{
 		ret += arr[i];
 	}
-	//cout << "转换后的bit串为:" << ret << endl;
-	//bitset<64> t(ret);
-	//cout << "转换为整型为:" << t.to_ulong() << endl;
 	return ret;
 }
 
@@ -67,12 +64,7 @@ unsigned long GF2X_to_Decimal(GF2X x, int m) {
 	{
 		ret += '0';
 	}
-	//cout << "原来的x为:" << x << endl;
-	//cout << "转换后的bit串为:" << ret << endl;
-	//dynamic_bitset<> db(m, ret);
-	//cout << "转换后的bit串为:" << ret << endl;
 	bitset<64> t(ret);
-	//cout << "转换为整型为:" << t.to_ulong() << endl;
 	return t.to_ulong();
 }
 
@@ -222,15 +214,12 @@ int judge2(Vec<GF2X> set, GF2X x) {
 		//cout << "res:::" <<res  << endl;
 		if (set[i] == x)
 		{
-			//cout << "x为:" << x << endl;
-			//cout << "相等的set为:" << set[i] << endl;
 			return 0;
 		}
 	}
 	return 1;
 }
 
-//模板函数：将string类型变量转换为常用的数值类型（此方法具有普遍适用性）
 template <class Type>
 Type stringToNum(const string& str) {
 	istringstream iss(str);
@@ -259,7 +248,6 @@ int test(int n1, vector<long> P1_data, vector<long> P2_data, int N, int m, int k
 	NTL_EXEC_RANGE(n1, first, last)
 		for (int i = first; i < last; i++)
 		{
-		// 从GF(2^n)中随机选择a、b、y
 		GF2X a = random_GF2X(m);
 		GF2X b = random_GF2X(m);
 		GF2X y = random_GF2X(k);
@@ -267,14 +255,6 @@ int test(int n1, vector<long> P1_data, vector<long> P2_data, int N, int m, int k
 		//GF2X b = vec_b[i];
 		//GF2X y = vec_y[i];
 
-
-		//// 初始
-		//Vec<GF2X> P1_correct_set, P2_correct_set;
-		//P1_count += GS_Protocol(i, P1_correct_set, P1_Set, N, m, k, a, b, y, f);
-		//P2_count += GS_Protocol(i, P2_correct_set, P2_Set, N, m, k, a, b, y, f);
-
-
-		// 优化
 		vector<long> P1_correct_set, P2_correct_set;
 		P1_count += GS_Protocol_sort_search(i, P1_correct_set, P1_data, N, m, k, a, b, y, f);
 		P2_count += GS_Protocol_sort_search(i, P2_correct_set, P2_data, N, m, k, a, b, y, f);
@@ -300,7 +280,7 @@ int main() {
 	//PRNG prng(_mm_set_epi32(4253465, 3434565, 234435, 23987045));
 	//block ce = prng.get<block>();
 	clock_t start = clock();
-	auto n = thread::hardware_concurrency();//获取cpu核心个数
+	auto n = thread::hardware_concurrency();
 	cout << n << endl;
 	int Round = 5000;
 	int N = pow(2, 18);
@@ -309,8 +289,8 @@ int main() {
 	float threshold = 0.5;
 	int k = log2((int)(threshold * N)) + 1;
 	int m = k + 8;
-	cout << "k为:" << k << endl;
-	cout << "m为:" << m << endl;
+	cout << "k=:" << k << endl;
+	cout << "m=:" << m << endl;
 	string f_filename = "f20.txt";
 	string P1_set_filename = "p1_20.txt";
 	string P1_sort_filename = "p1_sort_20.txt";
@@ -320,13 +300,12 @@ int main() {
 	string b_filename = "b20.txt";
 	string y_filename = "y20.txt";
 
-	//// 写文件
+	//// write files
 	GF2X f = BuildIrred_GF2X(m);
 
 	cout << "deg(f):" << deg(f) << endl;
 
-
-	// 生成参与方P1的集合
+	// generate P1 sets
 	Vec<GF2X> P1_Set;
 	P1_Set.SetLength(N);
 	for (int i = 0; i < N; i++) {
@@ -344,10 +323,9 @@ int main() {
 	sort(P1_data.begin(), P1_data.end());
 
 
-	//生成参与方P2的集合
+	// generate P2 sets
 	Vec<GF2X> P2_Set;
 	P2_Set.SetLength(N);
-	// 构造和P1集合frac比例相同的元素
 	float frac = 0.38;
 	int sameNum = (int)(frac * N);
 	//cout << "sameNum=" << sameNum << endl;
@@ -370,21 +348,6 @@ int main() {
 	sort(P2_data.begin(), P2_data.end());
 
 
-	// 生成a,b,y
-	//Vec<GF2X> vec_a;
-	//vec_a.SetLength(Round);
-
-	//Vec<GF2X> vec_b;
-	//vec_b.SetLength(Round);
-	//Vec<GF2X> vec_y;
-	//vec_y.SetLength(Round);
-
-	//for (int i = 0; i < Round; i++)
-	//{
-	//	vec_a.put(i, random_GF2X(m));
-		//vec_b.put(i, random_GF2X(m));
-		//vec_y.put(i, random_GF2X(k));
-	//}
 
 
 	
@@ -406,13 +369,10 @@ int main() {
 	}
 
 
-	//cout << "P1通过的次数为==" << P1_count << endl;
-	//cout << "P2通过的次数为==" << P2_count << endl;
-	//cout << "存在交集的次数为==" << count << endl;
-	cout << "数为==" << flag << endl;
+	cout << "count is =" << flag << endl;
 	clock_t end = clock();
 	double endtime = (double)(end - start) / CLOCKS_PER_SEC;
-	cout << "Total time===" << endtime << endl;		//s为单位
+	cout << "Total time===" << endtime << endl;		//sec
 
 
 
